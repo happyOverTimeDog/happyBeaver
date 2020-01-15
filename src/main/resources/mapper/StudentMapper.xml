@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ltm.sms.stumanagesystem.mapper.StudentMapper">
+    <resultMap id="baseResultMap" type="com.ltm.sms.stumanagesystem.domain.entity.Student">
+        <result column="stu_id" jdbcType="INTEGER" property="id"/>
+        <result column="stu_name" jdbcType="VARCHAR" property="stuName"/>
+        <result column="stu_class" jdbcType="VARCHAR" property="stuClass"/>
+        <result column="stu_age" jdbcType="INTEGER" property="stuAge"/>
+        <result column="hobby" jdbcType="VARCHAR" property="hobby"/>
+        <result column="entrytime" jdbcType="DATE" property="entryTime"/>
+        <result column="math" jdbcType="INTEGER" property="mathScore"/>
+        <result column="english" jdbcType="INTEGER" property="englishScore"/>
+        <result column="writing" jdbcType="INTEGER" property="writingScore"/>
+        <result column="course_name" jdbcType="INTEGER" property="courseName"/>
+    </resultMap>
+
+    <sql id="BaseStu_column">
+        s.stu_id,s.stu_name,s.stu_age,s.stu_class,scs.course_name,scs.score,s.hobby,s.entrytime
+    </sql>
+    <sql id="stu_where_condition">
+        <if test="id != null and id != ''">
+            and s.stu_id = #{id}
+        </if>
+        <if test="stuName != null and stuName != ''">
+            and s.stu_name = #{stuName}
+        </if>
+        <if test="stuClass != null and stuClass != ''">
+            and s.stu_class = #{stuClass}
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            <![CDATA[and s.entrytime > #{beginTime}]]>
+        </if>
+        <if test="endTime != null and endTime != ''">
+            <![CDATA[and s.entrytime < #{endTime}]]>
+        </if>
+    </sql>
+    <select id="getStuList" resultMap="baseResultMap">
+        select
+        <include refid="BaseStu_column"/>
+        from student s left join stu_course_score  scs on s.stu_id = scs.stu_id
+        where 1 = 1
+        <include refid="stu_where_condition"></include>
+    </select>
+    <delete id="delStudent" >
+        delete from student where stu_id = #{id}
+    </delete>
+
+    <update id="updateStudent" >
+        update student set
+        stu_name = #{stuName},
+        stu_class = #{stuClass},
+        stu_age = #{stuAge},
+        hobby = #{hobby}
+        where stu_id = #{id}
+    </update>
+    <insert id="addStudent">
+        insert into student(stu_name,stu_age,stu_class,hobby,entrytime) values(#{stuName},#{stuAge},#{stuClass},#{hobby},now())
+    </insert>
+</mapper>

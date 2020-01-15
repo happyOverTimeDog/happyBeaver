@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ltm.sms.stumanagesystem.mapper.ScoreMapper">
+    <resultMap id="baseResultMap" type="com.ltm.sms.stumanagesystem.domain.entity.Score">
+        <result column="score_id" jdbcType="INTEGER" property="id"/>
+        <result column="course_id" jdbcType="INTEGER" property="courseId"/>
+        <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
+        <result column="stu_id" jdbcType="INTEGER" property="stuId"/>
+        <result column="stu_name" jdbcType="VARCHAR" property="stuName"/>
+        <result column="score" jdbcType="VARCHAR" property="score"/>
+        <result column="teacher" jdbcType="VARCHAR" property="teacher"/>
+        <result column="createtime" jdbcType="DATE" property="createTime"/>
+    </resultMap>
+    <insert id="addScore">
+        insert into stu_course_score(course_id,course_name,stu_id,stu_name,score,teacher,createtime)
+        values(
+        #{courseId},
+        #{courseName},
+        #{stuId},
+        #{stuName},
+        #{score},
+        #{teacher},
+        now()
+        )
+    </insert>
+    <delete id="delScore">
+        delete  from stu_course_score
+        where score_id = #{id}
+    </delete>
+    <update id="updateScore">
+        update stu_course_score set course_id = #{courseId},
+        course_name = #{courseName},
+        stu_id = #{stuId},
+        stu_name = #{stuName},
+        teacher = #{teacher}
+        where score_id = #{id}
+    </update>
+    <select id="getScoreList" resultMap="baseResultMap">
+        select score_id,course_id,course_name,stu_id,stu_name,score,teacher,createtime from stu_course_score
+        where 1 = 1
+        <if test="id != null and id != ''">
+            and score_id = #{id}
+        </if>
+        <if test="courseName != null and courseName != ''">
+            and course_name = #{courseName}
+        </if>
+        <if test="teacher != null and teacher != ''">
+            and teacher = #{teacher}
+        </if>
+        <if test="courseId != null and courseId != ''">
+            and course_id = #{courseId}
+        </if>
+        <if test="stuId != null and stuId != ''">
+            and stu_id = #{stuId}
+        </if>
+        <if test="stuName != null and stuName != ''">
+            and stu_name = #{stuName}
+        </if>
+        <if test="score != null and score != ''">
+            and score = #{score}
+        </if>
+    </select>
+</mapper>
